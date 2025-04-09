@@ -1,9 +1,17 @@
+# scripts/detect.py
 from ultralytics import YOLO
+import os
+import random
 
-# Use a direct URL to bypass local image issues
+# Load model
 model = YOLO("yolov8n.pt")
-results = model.predict(source="https://ultralytics.com/images/bus.jpg")
 
-# Save results
-results[0].save("result.jpg")
-print("Detection saved to result.jpg!")
+# Get list of images and sample 500
+image_dir = "dataset/bdd100k/images/100k/val/"
+all_images = os.listdir(image_dir)
+sampled_images = random.sample(all_images, 500)  # Adjust number here
+
+# Detect on sampled images
+results = model.predict(source=[os.path.join(image_dir, img) for img in sampled_images], save=True, conf=0.5)
+
+print(f"Detected {len(sampled_images)} images. Results saved to runs/detect/predict/")
