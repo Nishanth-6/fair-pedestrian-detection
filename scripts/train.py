@@ -10,3 +10,23 @@ model.train(
     batch=8,
     classes=[0]
 )
+
+import csv
+from datetime import datetime
+
+log_file = "logs/metrics.csv"
+os.makedirs("logs", exist_ok=True)
+
+with open(log_file, mode='a', newline='') as f:
+    writer = csv.writer(f)
+    if f.tell() == 0:
+        writer.writerow(["timestamp", "run", "mAP", "HDR", "box_loss", "cls_loss"])
+
+    writer.writerow([
+        datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+        "train9",
+        0.0,    # dummy mAP
+        1.5,    # dummy HDR
+        14.3,   # from train logs
+        0       # no classification loss
+    ])
