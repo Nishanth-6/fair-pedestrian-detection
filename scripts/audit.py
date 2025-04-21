@@ -3,22 +3,33 @@ import os
 import random
 from ultralytics import YOLO
 
-model = YOLO("yolov8n.pt")
-short_missed = 0
-short_total = 0
+image_dir = "dataset/bdd100k/images/100k/val"
+sampled_images = random.sample(os.listdir(image_dir), 500)
 
-# Analyze 500 random images
-image_dir = "dataset/bdd100k/images/100k/val/"
-all_images = os.listdir(image_dir)
-sampled_images = random.sample(all_images, 500)  # Same subset as detect.py
+model = YOLO("yolov8n.pt")  # or path to your trained weights
+
+short_total = 0
+short_detected = 0
+tall_total = 0
+tall_detected = 0
 
 for img in sampled_images:
-    results = model(f"{image_dir}/{img}")
+    results = model(os.path.join(image_dir, img))
     for box in results[0].boxes:
-        h = box.xywh[0][3].item()
-        if h < 100:
+        height = box.xywh[0][3].item()
+        conf = box.conf.item()
+        if height < 140:
             short_total += 1
-            if box.conf.item() < 0.5:
-                short_missed += 1
+            if conf >= 0.5:
+                short_detected += 1
+        elif height >= 150:
+            tall_total += 1
+            if conf >= 0.5:
+                tall_detected += 1
 
-print(f"Audited {len(sampled_images)} images. Short Pedestrian FNR: {short_missed/short_total:.2f}")
+hdr = (tall_detected / tall_total) / (short_detected / short_total) if short_detected > 0 and tall_detected > 0 else 0
+
+print(f"\n📊 Audit Results on 500 Images:")
+print(f"  Short pedestrians detected: {short_detected}/{short_total}")
+print(f"  Tall pedestrians detected: {tall_detected}/{tall_total}")
+print(f"  HDR (Height Disparity Ratio): {hdr:.2f}")
