@@ -7,7 +7,7 @@ import os
 input_csv = "runs/detect/predict/predictions.csv"
 
 # Output file
-output_csv = "runs/detect/predict/enriched_predictions.csv"
+output_csv = "runs/detect/audit/enriched_predictions.csv"
 
 # Load basic predictions
 df = pd.read_csv(input_csv)
