@@ -1,0 +1,6 @@
+dataset/
+runs/
+venv/
+*.pt
+*.zip
+*.jpg
