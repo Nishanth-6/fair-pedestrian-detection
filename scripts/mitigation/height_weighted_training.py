@@ -6,9 +6,10 @@ import yaml
 from ultralytics import YOLO
 
 # --- CONFIGURATION ---
-TRAIN_IMG_DIR = Path("dataset/bdd100k/images/100k/train")
-TRAIN_LABEL_DIR = Path("dataset/bdd100k/labels/train") 
-VAL_IMG_DIR = Path("dataset/bdd100k/images/100k/val")
+DATA_ROOT       = Path("/content/bdd100k")        #  ←  new dataset root in Colab
+TRAIN_IMG_DIR   = DATA_ROOT / "train/images"
+TRAIN_LABEL_DIR = DATA_ROOT / "train/labels"
+VAL_IMG_DIR     = DATA_ROOT / "valid/images"
 
 # Where to write the weighted image list and YAML
 WEIGHTED_TXT = Path("dataset/bdd100k/height_weighted_train.txt")
@@ -66,10 +67,10 @@ print(f"✅ Height-weighted YAML saved to {WEIGHTED_YAML}")
 model = YOLO("yolov8n.pt")  # or your finetuned checkpoint
 
 model.train(
-    data=str(WEIGHTED_YAML),
+    data=str(DATA_ROOT / "data.yaml"),   #  <─  use /content/bdd100k/data.yaml
     epochs=5,
-    imgsz=320,
     batch=8,
+    imgsz=320,
     classes=[0],
     project="runs/detect/mitigation",
     name="height_weighted_train",
