@@ -64,7 +64,7 @@ with open(WEIGHTED_YAML, "w") as f:
 print(f"✅ Height-weighted YAML saved to {WEIGHTED_YAML}")
 
 # --- STEP 4: Launch YOLOv8 training on the weighted dataset ---
-model = YOLO("yolov8n.pt")  # or your finetuned checkpoint
+model = YOLO("yolov8n.pt")  
 
 model.train(
     data=str(DATA_ROOT / "data.yaml"),   #  <─  use /content/bdd100k/data.yaml
